@@ -1,4 +1,6 @@
+// React
 import { useState, useEffect } from "react";
+// mui
 import {
   Divider,
   TableContainer,
@@ -7,79 +9,42 @@ import {
   Box,
   TableBody,
 } from "@mui/material";
+// Components
 import BreadCrumbs from "./BreadCrumbs";
 import TableToolbar from "./TableToolbar";
-import useTable, { getComparator, emptyRows } from "../hooks/useTable";
 import TableHeadCustom from "./TableHeadCustom";
 import TableRowComponent from "./TableRow";
+// Types
 import { TableDataTypes } from "../@types/TableTypes";
-
-const APPLICATION_TYPES: string[] = [
-  "all",
-  "full stack development",
-  "backend development",
-  "ui design",
-  "ui/ux design",
-  "front end development",
-];
-
-const ACTION_TYPES: string[] = [
-  "all",
-  "full stack development",
-  "backend development",
-  "ui design",
-  "ui/ux design",
-  "front end development",
-];
-
-const TABLE_HEAD: {
-  id: string;
-  label: string;
-  align: string;
-}[] = [
-  { id: "invoiceNumber", label: "Log ID", align: "left" },
-  { id: "createDate", label: "Application Type", align: "left" },
-  { id: "dueDate", label: "Application ID", align: "left" },
-  { id: "price", label: "Action", align: "center" },
-  { id: "sent", label: "Action Details", align: "center" },
-  { id: "status", label: "Date", align: "center" },
-];
+// Hooks & Helpers
+import useTable, { getComparator } from "../hooks/useTable";
+// Constants
+import { APPLICATION_TYPES, ACTION_TYPES, TABLE_HEAD } from "../constants";
 
 export default function MainTable() {
   const {
-    dense,
     page,
     order,
     orderBy,
     rowsPerPage,
     setPage,
-    //
-    selected,
-    setSelected,
-    onSelectRow,
-    onSelectAllRows,
-    //
     onSort,
-    onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: "createDate" });
-
+  // Table Filters States
   const [tableData, setTableData] = useState<TableDataTypes[]>([]);
   const [filterName, setFilterName] = useState("");
-
-  const [AppTypeFilter, setFilterAppType] = useState("all");
-  const [ActionTypeFilter, setFilterActionType] = useState("all");
-  const [AppIDFilter, setAPPIDFilter] = useState("all");
-
+  const [AppTypeFilter, setFilterAppType] = useState("");
+  const [ActionTypeFilter, setFilterActionType] = useState("");
+  const [AppIDFilter, setAPPIDFilter] = useState("");
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
-
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
+  // Table Filters Actions
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
     setPage(0);
   };
-
   const handleFilterAppType = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterAppType(event.target.value);
   };
@@ -102,6 +67,7 @@ export default function MainTable() {
     filterEndDate,
     AppIDFilter,
   });
+
   useEffect(() => {
     async function fetchData() {
       const res = await fetch(
@@ -120,9 +86,11 @@ export default function MainTable() {
       <Divider />
       <TableToolbar
         filterName={filterName}
+        AppIDFilter={AppIDFilter}
         AppTypeFilter={AppTypeFilter}
         filterStartDate={filterStartDate}
         filterEndDate={filterEndDate}
+        ActionTypeFilter={ActionTypeFilter}
         onFilterAppID={handleFilterAppID}
         onFilterName={handleFilterName}
         onFilterAppType={handleFilterAppType}
@@ -180,6 +148,7 @@ function applySortFilter({
   filterEndDate,
   AppIDFilter,
   ActionTypeFilter,
+  AppTypeFilter,
 }: {
   tableData: TableDataTypes[];
   comparator: (a: any, b: any) => number;
@@ -190,31 +159,44 @@ function applySortFilter({
   filterEndDate: Date | null;
   AppIDFilter: string;
 }) {
-  //   const stabilizedThis = tableData.map((el, index) => [el, index] as const);
+  const stabilizedThis = tableData.map((el, index) => [el, index] as const);
 
-  //   stabilizedThis.sort((a, b) => {
-  //     const order = comparator(a[0], b[0]);
-  //     if (order !== 0) return order;
-  //     return a[1] - b[1];
-  //   });
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
 
-  //   tableData = stabilizedThis.map((el) => el[0]);
+  tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter(
-      (item: Record<string, any>) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !==
-          -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !==
-          -1
+    tableData = tableData;
+  }
+
+  if (AppIDFilter) {
+    tableData = tableData.filter((item: Record<string, any>) =>
+      item.applicationId?.toString().includes(AppIDFilter)
+    );
+  }
+
+  if (AppTypeFilter) {
+    tableData = tableData.filter((item: Record<string, any>) =>
+      item.applicationType?.toString().includes(AppTypeFilter)
+    );
+  }
+
+  if (ActionTypeFilter) {
+    tableData = tableData.filter((item: Record<string, any>) =>
+      item.actionType?.includes(ActionTypeFilter)
     );
   }
 
   if (filterStartDate && filterEndDate) {
     tableData = tableData.filter(
       (item: Record<string, any>) =>
-        item.createDate.getTime() >= filterStartDate.getTime() &&
-        item.createDate.getTime() <= filterEndDate.getTime()
+        new Date(item.creationTimestamp).getTime() >=
+          filterStartDate.getTime() &&
+        new Date(item.creationTimestamp).getTime() <= filterEndDate.getTime()
     );
   }
 

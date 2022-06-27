@@ -4,13 +4,14 @@ import DatePicker from "@mui/lab/DatePicker";
 
 // ----------------------------------------------------------------------
 
-const INPUT_WIDTH = 160;
+const INPUT_WIDTH = 190;
 
 type Props = {
-  actionsType: string[];
-  applicationType: string[];
+  actionsType: { label: string; value: string }[];
+  applicationType: { label: string; value: string }[];
   filterName: string;
   AppTypeFilter: string;
+  ActionTypeFilter: string;
   filterStartDate: Date | null;
   filterEndDate: Date | null;
   onFilterName: (value: string) => void;
@@ -19,6 +20,7 @@ type Props = {
   onFilterActionType: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFilterStartDate: (value: Date | null) => void;
   onFilterEndDate: (value: Date | null) => void;
+  AppIDFilter: string | number;
 };
 
 export default function TableToolbar({
@@ -34,6 +36,8 @@ export default function TableToolbar({
   onFilterStartDate,
   onFilterEndDate,
   onFilterAppID,
+  ActionTypeFilter,
+  AppIDFilter,
 }: Props) {
   return (
     <Stack
@@ -53,7 +57,7 @@ export default function TableToolbar({
         fullWidth
         select
         label="Action type"
-        value={AppTypeFilter}
+        value={ActionTypeFilter}
         onChange={onFilterActionType}
         SelectProps={{
           MenuProps: {
@@ -65,10 +69,10 @@ export default function TableToolbar({
           textTransform: "capitalize",
         }}
       >
-        {actionsType.map((option) => (
+        {actionsType.map((option, idx) => (
           <MenuItem
-            key={option}
-            value={option}
+            key={idx}
+            value={option.value}
             sx={{
               mx: 1,
               my: 0.5,
@@ -77,7 +81,7 @@ export default function TableToolbar({
               textTransform: "capitalize",
             }}
           >
-            {option}
+            {option.label}
           </MenuItem>
         ))}
       </TextField>
@@ -97,10 +101,10 @@ export default function TableToolbar({
           textTransform: "capitalize",
         }}
       >
-        {applicationType.map((option) => (
+        {applicationType.map((option, idx) => (
           <MenuItem
-            key={option}
-            value={option}
+            key={idx}
+            value={option.value}
             sx={{
               mx: 1,
               my: 0.5,
@@ -109,7 +113,7 @@ export default function TableToolbar({
               textTransform: "capitalize",
             }}
           >
-            {option}
+            {option.label}
           </MenuItem>
         ))}
       </TextField>
@@ -144,7 +148,7 @@ export default function TableToolbar({
         )}
       />
       <TextField
-        value={filterName}
+        value={AppIDFilter}
         onChange={(event) => onFilterAppID(event.target.value)}
         placeholder="Application ID"
         InputProps={{
