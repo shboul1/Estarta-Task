@@ -1,3 +1,4 @@
+import { Stack, Typography } from "@mui/material";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Table from "../components/Table";
@@ -12,6 +13,17 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Table />
+      <Stack direction="column" alignItems="center" spacing={2}>
+        <Typography variant="h4">Estarta Task - Amer Shboul</Typography>
+        <Typography variant="subtitle1" color="red">
+          ** the task asks the user to filter the content based on Employee Name
+          that does not exist in the data comes from API, so i ignored the
+          filter based on Employee Name
+        </Typography>
+        <Typography variant="subtitle1" color="red">
+          ** you can click on each table head to sort it (decreasing,ascending)
+        </Typography>
+      </Stack>
     </div>
   );
 };

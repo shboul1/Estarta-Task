@@ -1,11 +1,5 @@
 // mui
-import {
-  Stack,
-  InputAdornment,
-  TextField,
-  MenuItem,
-  Button,
-} from "@mui/material";
+import { Stack, InputAdornment, TextField, MenuItem } from "@mui/material";
 import DatePicker from "@mui/lab/DatePicker";
 
 // ----------------------------------------------------------------------
@@ -125,6 +119,8 @@ export default function TableToolbar({
       </TextField>
 
       <DatePicker
+        clearable
+        clearText="Reset"
         label="from date"
         value={filterStartDate}
         onChange={onFilterStartDate}
@@ -140,6 +136,8 @@ export default function TableToolbar({
       />
 
       <DatePicker
+        clearable
+        clearText="Reset"
         label="to date"
         value={filterEndDate}
         onChange={onFilterEndDate}
@@ -161,7 +159,6 @@ export default function TableToolbar({
           startAdornment: <InputAdornment position="start"></InputAdornment>,
         }}
       />
-      <Button variant="contained">RESET FEILD</Button>
     </Stack>
   );
 }
