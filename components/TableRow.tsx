@@ -7,7 +7,11 @@ type Props = {
   row: any;
 };
 
-const ACTION_TYPES: any = {
+interface ITypes {
+  [key: string]: string;
+}
+
+const ACTION_TYPES: ITypes = {
   INITIATE_APPLICATION: "Intitate application",
   SUBMIT_APPLICATION: "Submit Application",
   DARI_APP_LOGIN: "Dari app login",
@@ -15,7 +19,7 @@ const ACTION_TYPES: any = {
   ADD_EMPLOYEE: "Add employee",
 };
 
-const APPLICATION_TYPE: any = {
+const APPLICATION_TYPE: ITypes = {
   ADD_POA: "add POA",
   LEASE_REGISTRATION: "lease registration",
   CERT_TITLE_DEED_PLOT: "Cert title deed plot",

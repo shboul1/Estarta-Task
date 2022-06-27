@@ -1,5 +1,7 @@
 // React
 import { useState, useEffect } from "react";
+// next
+import { useRouter } from "next/router";
 // mui
 import {
   Divider,
@@ -20,7 +22,6 @@ import { TableDataTypes } from "../@types/TableTypes";
 import useTable, { getComparator } from "../hooks/useTable";
 // Constants
 import { APPLICATION_TYPES, ACTION_TYPES, TABLE_HEAD } from "../constants";
-import { useRouter } from "next/router";
 
 export default function MainTable() {
   const router = useRouter();
@@ -43,7 +44,9 @@ export default function MainTable() {
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
 
-  // Table Filters Actions
+  // ------------------------------------------------
+  // Table Filters Actions & Helpers
+
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
     setPage(0);
@@ -62,6 +65,21 @@ export default function MainTable() {
   const handleFilterAppID = (filterAppID: string) => {
     setAPPIDFilter(filterAppID);
   };
+
+  const dataFiltered = applySortFilter({
+    tableData,
+    comparator: getComparator(order, orderBy),
+    filterName,
+    ActionTypeFilter,
+    AppTypeFilter,
+    filterStartDate,
+    filterEndDate,
+    AppIDFilter,
+  });
+
+  // ------------------------------------------------
+
+  // SYNC URL with search Query using Shallow routing
   useEffect(() => {
     const ApplicationTypeQuery = `ApplicationType=${AppTypeFilter}&`;
     const ActionTypeQuery = `ActionType=${ActionTypeFilter}&`;
@@ -77,8 +95,8 @@ export default function MainTable() {
       `/?search=${AppTypeFilter && ApplicationTypeQuery}${
         ActionTypeFilter && ActionTypeQuery
       }${AppIDFilter && ApplicationIdQuery}${
-        filterStartDate && StartDatedQuery
-      }${filterEndDate && EndDateQuery}`,
+        filterStartDate ? StartDatedQuery : ""
+      }${filterEndDate ? EndDateQuery : ""}`,
       undefined,
       { shallow: true }
     );
@@ -91,17 +109,9 @@ export default function MainTable() {
     filterEndDate,
   ]);
 
-  const dataFiltered = applySortFilter({
-    tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-    ActionTypeFilter,
-    AppTypeFilter,
-    filterStartDate,
-    filterEndDate,
-    AppIDFilter,
-  });
+  // ------------------------------------------------
 
+  // Get Data From API
   useEffect(() => {
     async function fetchData() {
       const res = await fetch(
@@ -114,6 +124,7 @@ export default function MainTable() {
     }
     fetchData();
   }, []);
+
   return (
     <>
       <BreadCrumbs />
