@@ -20,8 +20,10 @@ import { TableDataTypes } from "../@types/TableTypes";
 import useTable, { getComparator } from "../hooks/useTable";
 // Constants
 import { APPLICATION_TYPES, ACTION_TYPES, TABLE_HEAD } from "../constants";
+import { useRouter } from "next/router";
 
 export default function MainTable() {
+  const router = useRouter();
   const {
     page,
     order,
@@ -34,12 +36,13 @@ export default function MainTable() {
   } = useTable({ defaultOrderBy: "createDate" });
   // Table Filters States
   const [tableData, setTableData] = useState<TableDataTypes[]>([]);
-  const [filterName, setFilterName] = useState("");
-  const [AppTypeFilter, setFilterAppType] = useState("");
-  const [ActionTypeFilter, setFilterActionType] = useState("");
-  const [AppIDFilter, setAPPIDFilter] = useState("");
+  const [filterName, setFilterName] = useState<string>("");
+  const [AppTypeFilter, setFilterAppType] = useState<string>("");
+  const [ActionTypeFilter, setFilterActionType] = useState<string>("");
+  const [AppIDFilter, setAPPIDFilter] = useState<string>("");
   const [filterStartDate, setFilterStartDate] = useState<Date | null>(null);
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
+
   // Table Filters Actions
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName);
@@ -47,6 +50,9 @@ export default function MainTable() {
   };
   const handleFilterAppType = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterAppType(event.target.value);
+    router.push(`/?search=ApplicationType=${event.target.value}&`, undefined, {
+      shallow: true,
+    });
   };
   const handleFilterActionType = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -56,6 +62,34 @@ export default function MainTable() {
   const handleFilterAppID = (filterAppID: string) => {
     setAPPIDFilter(filterAppID);
   };
+  useEffect(() => {
+    const ApplicationTypeQuery = `ApplicationType=${AppTypeFilter}&`;
+    const ActionTypeQuery = `ActionType=${ActionTypeFilter}&`;
+    const ApplicationIdQuery = `ApplicationId=${AppIDFilter}&`;
+    const StartDatedQuery =
+      filterStartDate &&
+      `StartDate=${new Date(filterStartDate).toLocaleDateString("en-US")}&`;
+    const EndDateQuery =
+      filterEndDate &&
+      `EndDate=${new Date(filterEndDate).toLocaleDateString("en-US")}&`;
+
+    router.push(
+      `/?search=${AppTypeFilter && ApplicationTypeQuery}${
+        ActionTypeFilter && ActionTypeQuery
+      }${AppIDFilter && ApplicationIdQuery}${
+        filterStartDate && StartDatedQuery
+      }${filterEndDate && EndDateQuery}`,
+      undefined,
+      { shallow: true }
+    );
+  }, [
+    AppTypeFilter,
+    ActionTypeFilter,
+    filterName,
+    AppIDFilter,
+    filterStartDate,
+    filterEndDate,
+  ]);
 
   const dataFiltered = applySortFilter({
     tableData,
