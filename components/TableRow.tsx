@@ -1,10 +1,11 @@
 // @mui
 import { TableRow, TableCell } from "@mui/material";
-
+// types
+import { TableDataTypes } from "../@types/TableTypes";
 // ----------------------------------------------------------------------
 
-type Props = {
-  row: any;
+type TableRowComponentProps = {
+  row: TableDataTypes;
 };
 
 interface ITypes {
@@ -28,7 +29,7 @@ const APPLICATION_TYPE: ITypes = {
   CERT_PROP_OWNERSHIP: "Cert prop ownership",
 };
 
-export default function TableRowComponent({ row }: Props) {
+export default function TableRowComponent({ row }: TableRowComponentProps) {
   const {
     logId,
     applicationType,

@@ -108,6 +108,7 @@ export default function MainTable() {
       undefined,
       { shallow: true }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     AppTypeFilter,
     ActionTypeFilter,
