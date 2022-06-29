@@ -53,9 +53,6 @@ export default function MainTable() {
   };
   const handleFilterAppType = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterAppType(event.target.value);
-    router.push(`/?search=ApplicationType=${event.target.value}&`, undefined, {
-      shallow: true,
-    });
   };
   const handleFilterActionType = (
     event: React.ChangeEvent<HTMLInputElement>
