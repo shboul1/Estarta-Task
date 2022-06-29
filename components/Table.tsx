@@ -77,6 +77,14 @@ export default function MainTable() {
     AppIDFilter,
   });
 
+  const handleResetFeilds = () => {
+    setFilterName("");
+    setFilterAppType("");
+    setFilterActionType("");
+    setAPPIDFilter("");
+    setFilterStartDate(null);
+    setFilterEndDate(null);
+  };
   // ------------------------------------------------
 
   // SYNC URL with search Query using Shallow routing
@@ -140,6 +148,7 @@ export default function MainTable() {
         onFilterName={handleFilterName}
         onFilterAppType={handleFilterAppType}
         onFilterActionType={handleFilterActionType}
+        onReset={handleResetFeilds}
         onFilterStartDate={(newValue) => {
           setFilterStartDate(newValue);
         }}

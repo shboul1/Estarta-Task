@@ -1,5 +1,11 @@
 // mui
-import { Stack, InputAdornment, TextField, MenuItem } from "@mui/material";
+import {
+  Stack,
+  InputAdornment,
+  TextField,
+  MenuItem,
+  Button,
+} from "@mui/material";
 import DatePicker from "@mui/lab/DatePicker";
 
 // ----------------------------------------------------------------------
@@ -20,6 +26,7 @@ type Props = {
   onFilterActionType: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFilterStartDate: (value: Date | null) => void;
   onFilterEndDate: (value: Date | null) => void;
+  onReset: VoidFunction;
   AppIDFilter: string | number;
 };
 
@@ -36,6 +43,7 @@ export default function TableToolbar({
   onFilterStartDate,
   onFilterEndDate,
   onFilterAppID,
+  onReset,
   ActionTypeFilter,
   AppIDFilter,
 }: Props) {
@@ -159,6 +167,9 @@ export default function TableToolbar({
           startAdornment: <InputAdornment position="start"></InputAdornment>,
         }}
       />
+      <Button onClick={onReset} variant="contained">
+        RESET FEILDS
+      </Button>
     </Stack>
   );
 }
